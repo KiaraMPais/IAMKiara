@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"       
+       xmlns:context="http://www.springframework.org/schema/context"       
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+  	<!-- Persistence - database, Hibernate, transactions, repository implementations -->
+
+	<!-- Configurarion de las aplicaciones -->
+	<import resource="aplicaciones-bd.xml"/>
+	<import resource="aplicaciones-ldap.xml"/>	
+  	
+  	<!-- Properties de las aplicaciones. -->
+  	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  		<property name="location" value="classpath:/infrastructure/aplicaciones.properties" /> 
+  	</bean>
+  	
+  	<!-- AOP -->
+	<context:load-time-weaver/> 	 
+	<context:spring-configured/>
+	<!-- <context:annotation-config/>-->
+	
+	<!-- Session Factories -->
+	<bean id="abstractSessionFactory" abstract="true" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">	    
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="log4j.logger.net.sf.hibernate=">debug</prop> -->
+				
+				<!-- Standalone app-->
+				<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop> -->				
+				<!-- <prop key="current_session_context_class">thread</property>  -->
+				
+				<!-- Si esta en APP server (y para transacciones XA-->
+				<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop> -->
+				<!-- <prop key="current_session_context_class">jta</property>  -->
+			</props>
+		</property>
+	</bean>
+	
+
+	<!-- Repositorios -->
+	<bean id="novedadRepository" name="novedadRepository" class="com.coto.sga.infrastructure.persistence.hibernate.NovedadRepositoryHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactoryPS" />
+		<property name="operacionUsuarioFactory" ref="operacionUsuarioFactory"/>
+	</bean>
+	
+	<bean id="usuarioBDRepository" class="com.coto.sga.infrastructure.persistence.hibernate.UsuarioBDRepositoryRoutingHibernateImpl">
+		<property name="sessions" ref="sessionBeanFactory" />
+	</bean>
+			
+	<bean id="usuarioLDAPRepository" class="com.coto.sga.infrastructure.persistence.ldap.UsuarioADRepositoryImpl" autowire-candidate="false">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>			
+	
+	<bean id="grupoRepository" class="com.coto.sga.infrastructure.persistence.ldap.GrupoRepositoryImpl" autowire-candidate="false">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>
+	
+	
+	<!-- Factories -->
+	<bean id="operacionUsuarioFactory" scope="singleton" class="com.coto.sga.infrastructure.factory.operacion.OperacionUsuarioFactory"/>
+		
+</beans>

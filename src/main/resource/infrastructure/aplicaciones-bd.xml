@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Datasources -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourcePS">
+		<property name="url" value="${PS.hibernate.connection.url}" />
+		<property name="driverClassName" value="${PS.hibernate.connection.driver_class}" />
+		<property name="username" value="${PS.hibernate.connection.username}" />
+		<property name="password" value="${PS.hibernate.connection.password}" />
+	</bean>
+	
+ 
+	<!-- Session Factories -->
+	<bean class="com.coto.sga.infrastructure.persistence.hibernate.SessionBeanFactory" id="sessionBeanFactory">					
+		<property name="sessionsFactory">
+			<map key-type="java.lang.String" value-type="org.hibernate.SessionFactory">
+				<entry key="PS" value-ref="sessionFactoryPS"/>
+				<entry key="SF" value-ref="sessionFactorySF"/>
+				<entry key="STS" value-ref="sessionFactorySTS"/>
+				<entry key="IPAD" value-ref="sessionFactoryIPAD"/>
+				<entry key="MD" value-ref="sessionFactoryMD"/>
+				<entry key="TCWEB" value-ref="sessionFactoryTCWEB"/>
+				<entry key="PDT" value-ref="sessionFactoryPDT"/>
+				<entry key="GEX" value-ref="sessionFactoryGEX"/>
+				<entry key="GDM" value-ref="sessionFactoryGDM"/>
+				<entry key="RF" value-ref="sessionFactoryRF"/>
+				<entry key="OPSGDM" value-ref="sessionFactoryOPSGDM"/>
+				<entry key="VACA" value-ref="sessionFactoryVACA"/>
+				<entry key="ADB" value-ref="sessionFactoryADB"/>
+				<entry key="RRT" value-ref="sessionFactoryRRT"/>
+				<entry key="RTC" value-ref="sessionFactoryRTC"/>
+                <entry key="EAD" value-ref="sessionFactoryEAD"/>
+				<entry key="COC" value-ref="sessionFactoryCOC"/>
+				<entry key="FDC" value-ref="sessionFactoryFDC"/>
+				<entry key="CTEFTE" value-ref="sessionFactoryCTEFTE"/>
+				<entry key="WF" value-ref="sessionFactoryWF"/>
+				<entry key="SIT" value-ref="sessionFactorySIT"/>
+			</map>
+		</property>
+	</bean>
+
+	<!-- PS -->
+	<bean id="sessionFactoryPS" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourcePS" />		
+		<property name="mappingResources">
+			<list>
+	 			<value>infrastructure/com/coto/sga/infrastructure/persistence/hibernate/Novedad.hbm.xml</value>
+			</list>			
+		</property>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerPS">
+		<property name="sessionFactory" ref="sessionFactoryPS" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManagerPS"/>
+
+	<!-- SF --> 
+	<bean id="sessionFactorySF" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceSF" />
+	</bean>
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceSF">
+		<property name="url" value="${SF.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${SF.hibernate.connection.driver_class}"/>
+		<property name="username" value="${SF.hibernate.connection.username}"/>
+		<property name="password" value="${SF.hibernate.connection.password}"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerSF">
+		<property name="sessionFactory" ref="sessionFactorySF" />
+	</bean>
+
+
+	<!-- STS -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceSTS">
+		<property name="url" value="${STS.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${STS.hibernate.connection.driver_class}"/>
+		<property name="username" value="${STS.hibernate.connection.username}"/>
+		<property name="password" value="${STS.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactorySTS" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceSTS"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerSTS">
+		<property name="sessionFactory" ref="sessionFactorySTS"/>
+	</bean>
+
+	<!-- VACA -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceVACA">
+		<property name="url" value="${VACA.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${VACA.hibernate.connection.driver_class}"/>
+		<property name="username" value="${VACA.hibernate.connection.username}"/>
+		<property name="password" value="${VACA.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryVACA" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceVACA"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerVACA">
+		<property name="sessionFactory" ref="sessionFactoryVACA"/>
+	</bean>
+
+	<!-- ADB -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceADB">
+		<property name="url" value="${ADB.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${ADB.hibernate.connection.driver_class}"/>
+		<property name="username" value="${ADB.hibernate.connection.username}"/>
+		<property name="password" value="${ADB.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryADB" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceADB"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerADB">
+		<property name="sessionFactory" ref="sessionFactoryADB"/>
+	</bean>
+
+	<!-- RRT -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceRRT">
+		<property name="url" value="${RRT.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${RRT.hibernate.connection.driver_class}"/>
+		<property name="username" value="${RRT.hibernate.connection.username}"/>
+		<property name="password" value="${RRT.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryRRT" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceRRT"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerRRT">
+		<property name="sessionFactory" ref="sessionFactoryRRT"/>
+	</bean>
+
+	<!-- RTC -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceRTC">
+		<property name="url" value="${RTC.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${RTC.hibernate.connection.driver_class}"/>
+		<property name="username" value="${RTC.hibernate.connection.username}"/>
+		<property name="password" value="${RTC.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryRTC" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceRTC"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerRTC">
+		<property name="sessionFactory" ref="sessionFactoryRTC"/>
+	</bean>
+
+	<!-- IPAD -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceIPAD">
+		<property name="url" value="${IPAD.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${IPAD.hibernate.connection.driver_class}"/>
+		<property name="username" value="${IPAD.hibernate.connection.username}"/>
+		<property name="password" value="${IPAD.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryIPAD" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceIPAD"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerIPAD">
+		<property name="sessionFactory" ref="sessionFactoryIPAD"/>
+	</bean>
+
+	<!-- MD -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceMD">
+		<property name="url" value="${MD.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${MD.hibernate.connection.driver_class}"/>
+		<property name="username" value="${MD.hibernate.connection.username}"/>
+		<property name="password" value="${MD.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryMD" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceMD"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerMD">
+		<property name="sessionFactory" ref="sessionFactoryMD"/>
+	</bean>
+
+	<!-- TCWEB -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceTCWEB">
+		<property name="url" value="${TCWEB.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${TCWEB.hibernate.connection.driver_class}"/>
+		<property name="username" value="${TCWEB.hibernate.connection.username}"/>
+		<property name="password" value="${TCWEB.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryTCWEB" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceTCWEB"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerTCWEB">
+		<property name="sessionFactory" ref="sessionFactoryTCWEB"/>
+	</bean>
+	
+	<!-- PDT (PLAN DE TRANSPORTE) -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourcePDT">
+		<property name="url" value="${PDT.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${PDT.hibernate.connection.driver_class}"/>
+		<property name="username" value="${PDT.hibernate.connection.username}"/>
+		<property name="password" value="${PDT.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryPDT" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourcePDT"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerPDT">
+		<property name="sessionFactory" ref="sessionFactoryPDT"/>
+	</bean>
+
+	<!-- GARANTIA EXTENDIDA -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceGEX">
+		<property name="url" value="${GEX.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${GEX.hibernate.connection.driver_class}"/>
+		<property name="username" value="${GEX.hibernate.connection.username}"/>
+		<property name="password" value="${GEX.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryGEX" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceGEX"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerGEX">
+		<property name="sessionFactory" ref="sessionFactoryGEX"/>
+	</bean>
+
+	<!-- GDM -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceGDM">
+		<property name="url" value="${GDM.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${GDM.hibernate.connection.driver_class}"/>
+		<property name="username" value="${GDM.hibernate.connection.username}"/>
+		<property name="password" value="${GDM.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryGDM" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceGDM"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerGDM">
+		<property name="sessionFactory" ref="sessionFactoryGDM"/>
+	</bean>
+
+	<!-- RF -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceRF">
+		<property name="url" value="${RF.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${RF.hibernate.connection.driver_class}"/>
+		<property name="username" value="${RF.hibernate.connection.username}"/>
+		<property name="password" value="${RF.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryRF" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceRF"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerRF">
+		<property name="sessionFactory" ref="sessionFactoryRF"/>
+	</bean>
+
+	<!-- OPSGDM -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceOPSGDM">
+		<property name="url" value="${OPSGDM.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${OPSGDM.hibernate.connection.driver_class}"/>
+		<property name="username" value="${OPSGDM.hibernate.connection.username}"/>
+		<property name="password" value="${OPSGDM.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryOPSGDM" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceOPSGDM"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerOPSGDM">
+		<property name="sessionFactory" ref="sessionFactoryOPSGDM"/>
+	</bean>
+
+        <!-- EAD -->
+        <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceEAD">
+        	<property name="url" value="${EAD.hibernate.connection.url}"/>
+                <property name="driverClassName" value="${EAD.hibernate.connection.driver_class}"/>
+                <property name="username" value="${EAD.hibernate.connection.username}"/>
+                <property name="password" value="${EAD.hibernate.connection.password}"/>
+       	</bean>
+        <bean id="sessionFactoryEAD" parent="abstractSessionFactory">
+        	<property name="dataSource" ref="dataSourceEAD"/>
+      	</bean>
+        <bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerEAD">
+        	<property name="sessionFactory" ref="sessionFactoryEAD"/>	
+	</bean>
+
+	<!-- COC -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceCOC">
+		<property name="url" value="${COC.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${COC.hibernate.connection.driver_class}"/>
+		<property name="username" value="${COC.hibernate.connection.username}"/>
+		<property name="password" value="${COC.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryCOC" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceCOC"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerCOC">
+		<property name="sessionFactory" ref="sessionFactoryCOC"/>
+	</bean>
+
+	<!-- FDC -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceFDC">
+		<property name="url" value="${FDC.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${FDC.hibernate.connection.driver_class}"/>
+		<property name="username" value="${FDC.hibernate.connection.username}"/>
+		<property name="password" value="${FDC.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryFDC" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceFDC"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerFDC">
+		<property name="sessionFactory" ref="sessionFactoryFDC"/>
+	</bean>
+
+	<!-- CTEFTE -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceCTEFTE">
+		<property name="url" value="${CTEFTE.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${CTEFTE.hibernate.connection.driver_class}"/>
+		<property name="username" value="${CTEFTE.hibernate.connection.username}"/>
+		<property name="password" value="${CTEFTE.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryCTEFTE" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceCTEFTE"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerCTEFTE">
+		<property name="sessionFactory" ref="sessionFactoryCTEFTE"/>
+	</bean>
+
+	<!-- WF -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceWF">
+		<property name="url" value="${WF.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${WF.hibernate.connection.driver_class}"/>
+		<property name="username" value="${WF.hibernate.connection.username}"/>
+		<property name="password" value="${WF.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactoryWF" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceWF"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerWF">
+		<property name="sessionFactory" ref="sessionFactoryWF"/>
+	</bean>
+
+	<!-- SIT -->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSourceSIT">
+		<property name="url" value="${SIT.hibernate.connection.url}"/>
+		<property name="driverClassName" value="${SIT.hibernate.connection.driver_class}"/>
+		<property name="username" value="${SIT.hibernate.connection.username}"/>
+		<property name="password" value="${SIT.hibernate.connection.password}"/>
+	</bean>
+	<bean id="sessionFactorySIT" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceSIT"/>
+	</bean>
+	<bean class="org.springframework.orm.hibernate3.HibernateTransactionManager" id="transactionManagerSIT">
+		<property name="sessionFactory" ref="sessionFactorySIT"/>
+	</bean>
+
+</beans>

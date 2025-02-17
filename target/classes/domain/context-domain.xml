@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"              
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+	<!-- Entities -->
+	<bean id="novedad" class="com.coto.sga.domain.model.novedad.Novedad" scope="prototype">
+ 		<property name="novedadRepository" ref="novedadRepository" /><!-- Autowired? -->
+ 	</bean>
+
+	<!-- Ver si hay que sacar -->
+	<bean id="usuario" class="com.coto.sga.domain.model.usuario.Usuario" scope="prototype" abstract="true"/>
+
+	<bean id="usuarioLDAP" class="com.coto.sga.domain.model.usuario.UsuarioLDAP" scope="prototype" parent="usuario">
+ 		<property name="repositorioUsuarioLDAP" ref="usuarioLDAPRepository" />
+ 	</bean>
+ 	
+ 	<bean id="usuarioBD" class="com.coto.sga.domain.model.usuario.UsuarioBD" scope="prototype">
+ 		<property name="usuarioBDRepository" ref="usuarioBDRepository" />
+ 	</bean>
+ 	
+ 	<bean id="grupo" class="com.coto.sga.domain.model.grupo.Grupo" scope="prototype">
+ 		<property name="grupoRepository" ref="grupoRepository" />
+ 	</bean>
+ 	
+ </beans>

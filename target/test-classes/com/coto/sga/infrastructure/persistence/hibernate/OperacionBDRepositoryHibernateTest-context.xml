@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <!-- Persistence - database, Hibernate, transactions, repository implementations -->
+
+	<!-- Un archivo con todos los DS o un archivo por ds (Hay que mantener este archivo) -->
+	<!--<jee:jndi-lookup id="dataSourceSF" jndi-name="CDVDS" />
+	<jee:jndi-lookup id="dataSourcePS" jndi-name="CDVDS2" />-->
+
+
+<!-- 
+
+ <bean id="myDataSource1" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName value="java:comp/env/jdbc/myds1"/>
+  </bean>
+
+  <bean id="myDataSource2" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:comp/env/jdbc/myds2"/>
+  </bean>
+
+ -->
+
+
+<!-- <bean id="dataSourceSF" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="url" value="jdbc:oracle:thin:@anubis.redcoto.com.ar:1521:LYE_TEST" />
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="username" value="CDV" />
+		<property name="password" value="CDV" />		
+	</bean> -->
+		
+	<bean id="dataSourcePS" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="url" value="jdbc:oracle:thin:@anubis.redcoto.com.ar:1521:LYE_TEST" />
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="username" value="CDV" />
+		<property name="password" value="CDV" />		
+	</bean>
+
+	<bean id="abstractSessionFactory" abstract="true" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop> -->
+				<!-- <property name="current_session_context_class">jta</property>  -->
+			</props>
+		</property>
+		
+		<!-- <property name="mappingResources">
+			<list>
+				<value>/hibernate/Novedad.hbm.xml</value>
+			</list>
+		</property> -->
+	</bean>
+		  
+  	<!-- <tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="abstractSessionFactory" />
+	</bean> -->
+		
+	<bean id="sessionBeanFactory" class="com.coto.sga.infrastructure.persistence.hibernate.SessionBeanFactory">					
+		<property name="sessionsFactory">
+		<map> <!-- key-type="java.lang.String" value-type="org.hibernate.SessionFactory" -->
+			<entry key="SF" value-ref="sessionFactorySF" />
+			<entry key="PS" value-ref="sessionFactoryPS" />
+		</map>
+		</property>
+	</bean>
+
+
+	<!-- Sessiones -->
+	<bean id="sessionFactorySF" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourcePS" />
+	</bean>	
+	<bean id="transactionManager1" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactorySF" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager1"/>
+
+	<bean id="sessionFactoryPS" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourcePS" />
+	</bean>
+	<bean id="transactionManager2" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactoryPS" />		
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager2"/>
+
+		
+	<!-- Repositories 
+	<bean id="hibernateRoutingRepository" class="com.coto.sga.infrastructure.persistence.hibernate.HibernateRoutingRepository2">
+		<property name="sessions" ref="sessionBeanFactory" />
+	</bean>-->
+	
+	<bean id="operacionBDRepository" class="com.coto.sga.infrastructure.persistence.hibernate.OperacionBDRepositoryHibernate">
+		<property name="sessions" ref="sessionBeanFactory" />
+	</bean>
+	
+
+</beans>

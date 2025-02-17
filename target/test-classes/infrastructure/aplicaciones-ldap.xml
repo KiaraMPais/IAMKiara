@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"       
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	<!-- Properties de las aplicaciones 
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  		<property name="location" value="classpath:/infrastructure/aplicaciones.properties" /> 
+  	</bean>
+
+	<bean id="contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">	
+		<property name="url" value="${AD.ldap.connection.url}" />
+		<property name="base" value="${AD.ldap.connection.base}" />		
+		<property name="userDn" value="${AD.ldap.connection.userDn}"/>				
+		<property name="password" value="${AD.ldap.connection.password}" />
+		<property name="referral" value="follow" />
+		<property name="baseEnvironmentProperties">
+			<map>
+				<entry key="java.naming.security.authentication" value="simple" />
+			</map>
+		</property>
+	</bean>-->
+	<!-- 
+	<bean id="contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">		
+		<property name="url" value="ldaps://localhost:636" />
+		<property name="base" value="DC=redcoto,DC=com,DC=ar" />		
+		<property name="userDn" value="cn=Administrator,cn=Users,dc=redcoto,dc=com,dc=ar"/>
+		<property name="password" value="contoso" />
+		<property name="referral" value="follow" />
+		<property name="baseEnvironmentProperties">
+			<map>
+				<entry key="java.naming.security.authentication" value="simple" />
+			</map>
+		</property>
+	</bean>-->
+	<bean id="contextSourceTarget" class="org.springframework.ldap.core.support.LdapContextSource">
+		<!--<property name="url" value="ldap://localhost:389"/>-->
+		<property name="url" value="ldaps://localhost:636" />
+		<property name="base" value="DC=test,dc=com,dc=ar" />		
+		<property name="userDn" value="cn=lucasproxy,dc=test,dc=com,dc=ar"/>				
+		<property name="password" value="lucassch3" />
+		<property name="referral" value="follow" />
+		<property name="baseEnvironmentProperties">
+			<map>
+				<entry key="java.naming.security.authentication" value="simple" />
+			</map>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.ldap.core.support.BaseLdapPathBeanPostProcessor" />
+
+	<bean id="contextSource"
+		class="org.springframework.ldap.transaction.compensating.manager.TransactionAwareContextSourceProxy">
+		<constructor-arg ref="contextSourceTarget" />
+	</bean>
+
+	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<constructor-arg ref="contextSource" />
+	</bean>
+
+	<bean id="transactionManagerLDAP"
+		class="org.springframework.ldap.transaction.compensating.manager.ContextSourceTransactionManager">
+		<property name="contextSource" ref="contextSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManagerLDAP"/>
+
+</beans>

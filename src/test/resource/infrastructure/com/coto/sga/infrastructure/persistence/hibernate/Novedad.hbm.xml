@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+ 
+<hibernate-mapping>
+
+    <class name="com.coto.sga.domain.model.novedad.Novedad" table="PS_SGA_NOVEDAD">
+    
+    	<composite-id>
+    		<key-property name="legajo" column="EMPLID"/>
+    		<key-property name="numeroSolicitud" column="ID_SOLICITUD"/>
+    	</composite-id>
+        
+        <property name="legajo" type="java.lang.String" insert="false" update="false">
+            <column name="EMPLID" length="11" not-null="true" unique="true" />
+        </property>
+        
+        <property name="numeroSolicitud" type="java.lang.Long" insert="false" update="false">
+            <column name="ID_SOLICITUD" length="10" not-null="true" unique="true" />
+        </property>
+        
+        <property name="estado" type="java.lang.String">
+            <column name="REQ_STATUS" length="4" not-null="true"/>
+        </property>
+        
+        <property name="comando" type="java.lang.String" insert="false" update="false">
+            <column name="COMMAND_TYPE" length="6" not-null="true"/>
+        </property>     
+        
+        <property name="instanciaProceso" type="java.lang.Long" insert="false" update="false">
+        	<column name="PROCESS_INSTANCE"  not-null="true" unique="true"/>
+        </property>
+
+    </class>
+    	
+    <sql-query name="getUsuariosLDAP">    
+    	<query-param name="legajo" type="java.lang.String" />
+	    <query-param name="nroSolicitud" type="java.lang.Long" />
+	    
+	    <return-scalar column="emplid" type="string"/>
+	    <return-scalar column="name1" type="string"/>
+	    <return-scalar column="name2" type="string"/>
+	    <return-scalar column="last_name" type="string"/>
+	    <return-scalar column="last_name2" type="string"/>
+	    <return-scalar column="cot_cuit" type="string"/>
+	    <return-scalar column="cot_nro_doc" type="string"/>
+	    <return-scalar column="deptid" type="string"/>
+	    <return-scalar column="sga_puesto" type="string"/>
+	    <return-scalar column="user_oprid" type="string"/>
+	    <return-scalar column="rutaRelativa" type="string"/>
+	    <return-scalar column="dominio" type="string"/>
+	   
+	      	SELECT NVD.EMPLID,
+		       NVD.NAME1,
+		       NVD.NAME2,
+		       NVD.LAST_NAME,
+		       NVD.LAST_NAME2,
+		       NVD.COT_CUIT,
+		       NVD.COT_NRO_DOC,
+		       NVD.DEPTID,
+		       NVD.SGA_PUESTO,
+		       NVD.USER_OPRID,
+		       ADR.PATHNAME AS rutaRelativa,
+		       ADR.LOGON_NAME AS dominio
+		  	FROM PS_SGA_NOVEDAD NVD,PS_SGA_PUESTO_H PTH, PS_SGA_AD_RUTA ADR
+		 	WHERE NVD.EMPLID = :legajo
+		   	AND NVD.ID_SOLICITUD = :nroSolicitud
+		   	AND PTH.SGA_PUESTO = NVD.SGA_PUESTO
+		   	AND ADR.PATH_NBR = PTH.PATH_NBR
+		   	AND PTH.SGA_RED='Y'
+	</sql-query>
+
+	 <sql-query name="getGrupos"><!-- Grupos de un pueso -->
+	 	<query-param name="puesto" type="java.lang.String" />
+	 	<return-scalar column="nombre" type="string"/>
+	 			    	
+    	SELECT DESCR254 AS nombre FROM PS_SGA_PUESTO_GRP WHERE
+    	SGA_PUESTO = :puesto
+    </sql-query>
+
+	<!-- Usuarios que tienen distinta aplicacion, -->
+	<sql-query name="getUsuariosBD"> <!-- Usuarios BD asociados a Novedad-->
+		<query-param name="legajo" type="java.lang.String" />
+	    <query-param name="nroSolicitud" type="java.lang.Long" />
+	    
+	    <return-scalar column="emplid" type="string"/>
+	    <return-scalar column="name1" type="string"/>
+	    <return-scalar column="name2" type="string"/>
+	    <return-scalar column="last_name" type="string"/>
+	    <return-scalar column="last_name2" type="string"/>
+	    <return-scalar column="cot_cuit" type="string"/>
+	    <return-scalar column="cot_nro_doc" type="string"/>
+	    <return-scalar column="deptid" type="string"/>
+	    <return-scalar column="sga_puesto" type="string"/>
+	    <return-scalar column="user_oprid" type="string"/>
+	    <return-scalar column="sga_perfil" type="string"/>
+	    <return-scalar column="sga_appl_id" type="string"/>
+
+	    	SELECT DISTINCT NVD.EMPLID,
+		       NVD.NAME1,
+		       NVD.NAME2,
+		       NVD.LAST_NAME,
+		       NVD.LAST_NAME2,
+		       NVD.COT_CUIT,
+		       NVD.COT_NRO_DOC,
+		       NVD.DEPTID,
+		       NVD.SGA_PUESTO,
+		       NVD.USER_OPRID,
+		       PAP.SGA_PERFIL,
+ 		       APS.SGA_APPL_ID
+		  	FROM PS_SGA_NOVEDAD NVD,PS_SGA_APPL_S APS,PS_SGA_PUESTO_APPL PAP
+		 	WHERE NVD.EMPLID = :legajo
+		   	AND NVD.ID_SOLICITUD= :nroSolicitud
+		   	AND APS.SGA_APPL_ID = PAP.SGA_APPL_ID
+			AND PAP.SGA_PUESTO = NVD.SGA_PUESTO
+			AND APS.COMMAND_TYPE = NVD.COMMAND_TYPE
+    </sql-query>
+
+
+ 	<sql-query name="getConsultasOrdenadas">
+
+	    <query-param name="puesto" type="java.lang.String"/>
+	    <query-param name="comando" type="java.lang.String"/>
+	    <query-param name="aplicacion" type="java.lang.String"/>
+	    <query-param name="perfil" type="java.lang.String"/>
+	    <return-scalar column="SQLTEXT" type="text"/>
+	    	    
+			SELECT APS.SQLTEXT
+			FROM PS_SGA_APPL_S APS,PS_SGA_PUESTO_APPL PAP
+			WHERE APS.SGA_APPL_ID = PAP.SGA_APPL_ID
+			   	AND PAP.SGA_PUESTO = :puesto
+			   	AND APS.COMMAND_TYPE = :comando
+			   	AND APS.Sga_Appl_Id = :aplicacion
+			   	AND PAP.SGA_PERFIL = :perfil
+			ORDER BY APS.SEQNUM
+    </sql-query>
+
+</hibernate-mapping>

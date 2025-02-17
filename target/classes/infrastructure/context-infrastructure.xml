@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"       
+       xmlns:context="http://www.springframework.org/schema/context"       
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd        
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+  	<!-- Persistence - database, Hibernate, transactions, repository implementations -->
+
+	<!-- Configurarion de las aplicaciones -->
+	<import resource="aplicaciones-bd.xml"/>
+	<import resource="aplicaciones-ldap.xml"/>	
+  	
+  	<!-- Properties de las aplicaciones. -->  	
+  	<bean id="propertyConfigurer" class="org.jasypt.spring2.properties.EncryptablePropertyPlaceholderConfigurer">
+  		<constructor-arg ref="configurationEncryptor" />
+  		<property name="location" value="classpath:/infrastructure/aplicaciones.properties"/>
+  	</bean>
+
+  	<bean id="configurationEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+  		<property name="config" ref="environmentVariablesConfiguration" />
+  	</bean>
+
+  	<bean id="environmentVariablesConfiguration" class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+  		<property name="algorithm" value="PBEWithMD5AndDES" />
+  		<property name="passwordEnvName" value="SGA_ENCRYPTION_PASSWORD"/>
+  	</bean>
+
+  	
+  	<!-- bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+  		<property name="location" value="classpath:/infrastructure/aplicaciones.properties" /> 
+  	</bean-->
+  	
+  	<!-- AOP,tener en cuenta que para jboss4.0.3SP1 COMENTAR context:load-time-weaver/ O EJECUTAR ASI-->
+  	<!-- C:\PROGRA~1\Java\jre6\bin\java -javaagent:E:\PSOFT\fin8arg\appserv\classes\lib\spring-agent-2.5.6.jar -jar E:\PSOFT\fin8arg\appserv\classes\sga-1.8.jar %2 -->
+	<context:load-time-weaver/> 	 
+	<context:spring-configured/>
+	<!-- <context:annotation-config/>-->
+	
+	<!-- Session Factories -->
+	<bean id="abstractSessionFactory" abstract="true" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">	    
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+				<prop key="hibernate.show_sql">false</prop>				
+				<prop key="hibernate.transaction.flush_before_completion">false</prop>
+				<prop key="hibernate.transaction.auto_close_session">false</prop><!-- Cierra la sesion cada vez que se hace commit o rollback-->				
+				<!-- <prop key="log4j.logger.net.sf.hibernate=">debug</prop> -->
+				
+				<!-- Standalone app-->
+				<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop> -->				
+				<!-- <prop key="current_session_context_class">thread</property>  -->
+				
+				<!-- Si esta en APP server (y para transacciones XA-->
+				<!-- <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop> -->
+				<!-- <prop key="current_session_context_class">jta</property>  -->
+			</props>
+		</property>
+	</bean>
+	
+
+	<!-- Repositorios -->
+	<bean id="novedadRepository" name="novedadRepository" class="com.coto.sga.infrastructure.persistence.hibernate.NovedadRepositoryHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactoryPS" />
+		<property name="operacionUsuarioFactory" ref="operacionUsuarioFactory"/>
+	</bean>
+	
+	<bean id="usuarioBDRepository" class="com.coto.sga.infrastructure.persistence.hibernate.UsuarioBDRepositoryRoutingHibernateImpl">
+		<property name="sessions" ref="sessionBeanFactory" />
+	</bean>
+			
+	<bean id="usuarioLDAPRepository" class="com.coto.sga.infrastructure.persistence.ldap.UsuarioADRepositoryImpl" autowire-candidate="false">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>			
+	
+	<bean id="grupoRepository" class="com.coto.sga.infrastructure.persistence.ldap.GrupoRepositoryImpl" autowire-candidate="false">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+	</bean>
+	
+	
+	<!-- Factories -->
+	<bean id="operacionUsuarioFactory" scope="singleton" class="com.coto.sga.infrastructure.factory.operacion.OperacionUsuarioFactory"/>
+		
+</beans>

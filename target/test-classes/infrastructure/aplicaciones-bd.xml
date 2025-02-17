@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"       
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	
+	<!-- Datasources -->
+	
+	<bean id="dataSourceSF" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="url" value="${SF.hibernate.connection.url}" />
+		<property name="driverClassName" value="${SF.hibernate.connection.driver_class}" />
+		<property name="username" value="${SF.hibernate.connection.username}" />
+		<property name="password" value="${SF.hibernate.connection.password}" />
+	</bean>
+
+	<bean id="dataSourcePS" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="url" value="${PS.hibernate.connection.url}" />
+		<property name="driverClassName" value="${PS.hibernate.connection.driver_class}" />
+		<property name="username" value="${PS.hibernate.connection.username}" />
+		<property name="password" value="${PS.hibernate.connection.password}" />
+	</bean>
+ 
+	<!-- Session Factories -->
+	<bean id="sessionBeanFactory" class="com.coto.sga.infrastructure.persistence.hibernate.SessionBeanFactory">					
+		<property name="sessionsFactory">
+		<map key-type="java.lang.String" value-type="org.hibernate.SessionFactory">
+			<entry key="SF" value-ref="sessionFactorySF" />
+			<entry key="PS" value-ref="sessionFactoryPS" />
+		</map>
+		</property>
+	</bean>
+	
+	<!-- PS -->
+	<bean id="sessionFactoryPS" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourcePS" />		
+		<property name="mappingResources">
+			<list>
+	 			<value>infrastructure/com/coto/sga/infrastructure/persistence/hibernate/Novedad.hbm.xml</value>
+			</list>			
+		</property>
+	</bean>
+	<bean id="transactionManagerPS" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactoryPS" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManagerPS"/>
+	
+	<!-- SF --> 
+	<bean id="sessionFactorySF" parent="abstractSessionFactory">
+		<property name="dataSource" ref="dataSourceSF" />
+	</bean>	
+	<bean id="transactionManagerSF" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactorySF" />
+	</bean>
+
+</beans>

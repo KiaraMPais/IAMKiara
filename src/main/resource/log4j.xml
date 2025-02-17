@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd" >
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+	<appender name="FileAp" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/sga.log"/>
+		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
+		<!-- <param name="MaxBackupIndex" value="10"/> -->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %p [%c] - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Para ambiente de Produccion -->
+	<appender name="DBAp" class="org.apache.log4j.jdbc.JDBCAppender">
+		<param name="URL" value="jdbc:oracle:thin:@//cd2-scan1\:1728/ps9uat.redcoto.com.ar"/>
+	    <param name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+	    <param name="user" value="SGA"/>
+	    <param name="password" value="SGA"/>
+	    
+	    <param name="sql" value="INSERT INTO PS_SGA_LOG (EMPLID,ID_SOLICITUD,DTTM_STAMP,SGA_APPL_ID,MESSAGE_ID,MESSAGE_PARM,PROCESS_INSTANCE) VALUES('%X{legajo}','%X{numeroSolicitud}',to_timestamp('%d{dd/MM/yyyy HH:mm:ss,SSS}','dd/MM/yyyy HH24:MI:SS,FF'),'%X{aplicacion}','%p','%m','%X{instanciaProceso}')"/>
+	</appender>
+	
+	<logger name="com.coto.sga">
+		<level value="info" />
+	 	<appender-ref ref="DBAp" />
+	</logger>
+	
+	<logger name="org.hibernate.cfg" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.impl" additivity="false"><!-- org.hibernate.impl.SessionFactoryImpl -->
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	
+	<logger name="org.hibernate.loader" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.persister" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	
+	<logger name="org.hibernate.hql" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.dialect.Dialect" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.connection" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.transaction.TransactionManagerLookupFactory" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.engine" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.util" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	
+	<logger name="org.springframework" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+
+	<logger name="org.hibernate.SQL" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+	<logger name="org.hibernate.type" additivity="false">
+		<level value="error" />
+		<appender-ref ref="FileAp"/>
+	</logger>
+	
+
+	<root>
+		<level value="error"/>
+		<appender-ref ref="FileAp"/>
+	</root>
+</log4j:configuration>

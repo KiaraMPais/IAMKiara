@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Built-By: 176316
+Build-Jdk: 17.0.4.1
+Class-Path: lib/log4j-1.2.16.jar lib/jasypt-1.9.0.jar lib/jasypt-spring2
+ -1.9.0.jar lib/spring-core-3.0.6.RELEASE.jar lib/spring-asm-3.0.6.RELEA
+ SE.jar lib/spring-orm-3.0.6.RELEASE.jar lib/spring-beans-3.0.6.RELEASE.
+ jar lib/spring-jdbc-3.0.6.RELEASE.jar lib/spring-tx-3.0.6.RELEASE.jar l
+ ib/aopalliance-1.0.jar lib/spring-aop-3.0.6.RELEASE.jar lib/spring-aspe
+ cts-3.0.6.RELEASE.jar lib/spring-context-3.0.6.RELEASE.jar lib/spring-e
+ xpression-3.0.6.RELEASE.jar lib/spring-context-support-3.0.6.RELEASE.ja
+ r lib/aspectjrt-1.8.5.jar lib/aspectjweaver-1.8.5.jar lib/spring-agent-
+ 2.5.6.jar lib/spring-ldap-core-1.3.1.RELEASE.jar lib/commons-lang-2.5.j
+ ar lib/ojdbc14-9.0.2.0.0.jar lib/classes12-9.0.2.0.0.jar lib/sqljdbc4-3
+ .0.jar lib/hibernate-3.2.4.sp1.jar lib/ehcache-1.2.3.jar lib/jta-1.0.1B
+ .jar lib/asm-attrs-1.5.3.jar lib/antlr-2.7.6.jar lib/cglib-2.1_3.jar li
+ b/asm-1.5.3.jar lib/hibernate-annotations-3.3.0.ga.jar lib/dom4j-1.6.1.
+ jar lib/xml-apis-1.0.b2.jar lib/commons-logging-1.1.1.jar lib/commons-c
+ ollections-3.2.1.jar lib/commons-dbcp-1.3.jar lib/commons-pool-1.5.4.ja
+ r lib/persistence-api-1.0.jar lib/httpclient-4.3.5.jar lib/commons-code
+ c-1.6.jar lib/httpcore-4.3.3.jar lib/mysql-connector-java-3.0.17-ga-bin
+ .jar
+Main-Class: com.coto.sga.application.Inicio
+Created-By: Maven Integration for Eclipse
+
